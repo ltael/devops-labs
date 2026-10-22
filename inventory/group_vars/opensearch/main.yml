@@ -1,0 +1,1 @@
+opensearch_admin_password: "{{ vault_opensearch_admin_password }}"
