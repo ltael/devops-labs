@@ -1,0 +1,124 @@
+
+PLAY [Deploy OpenSearch single-node] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [opensearch1]
+
+TASK [opensearch : Validate role parameters] ***********************************
+ok: [opensearch1]
+
+TASK [opensearch : Install dependencies] ***************************************
+changed: [opensearch1]
+
+TASK [opensearch : Create OpenSearch group] ************************************
+changed: [opensearch1]
+
+TASK [opensearch : Create OpenSearch user] *************************************
+changed: [opensearch1]
+
+TASK [opensearch : Set kernel parameters for OpenSearch] ***********************
+changed: [opensearch1]
+
+TASK [opensearch : Apply kernel parameters before service start] ***************
+
+RUNNING HANDLER [opensearch : Apply sysctl] ************************************
+changed: [opensearch1]
+
+TASK [opensearch : Create data and log directories] ****************************
+changed: [opensearch1] => (item=/var/lib/opensearch)
+changed: [opensearch1] => (item=/var/log/opensearch)
+
+TASK [opensearch : Download OpenSearch 3.8.0] **********************************
+changed: [opensearch1]
+
+TASK [opensearch : Unpack OpenSearch] ******************************************
+changed: [opensearch1]
+
+TASK [opensearch : Create symlink to installed OpenSearch version] *************
+changed: [opensearch1]
+
+TASK [opensearch : Generate demo TLS certificates and security config] *********
+changed: [opensearch1]
+
+TASK [opensearch : Render opensearch.yml] **************************************
+changed: [opensearch1]
+
+TASK [opensearch : Render JVM heap options] ************************************
+changed: [opensearch1]
+
+TASK [opensearch : Install systemd unit for OpenSearch] ************************
+changed: [opensearch1]
+
+TASK [opensearch : Apply pending OpenSearch changes] ***************************
+
+RUNNING HANDLER [opensearch : Reload systemd] **********************************
+ok: [opensearch1]
+
+RUNNING HANDLER [opensearch : Restart opensearch] ******************************
+changed: [opensearch1]
+
+TASK [opensearch : Enable and start OpenSearch] ********************************
+changed: [opensearch1]
+
+TASK [opensearch : Wait for OpenSearch API to become ready] ********************
+FAILED - RETRYING: [opensearch1]: opensearch : Wait for OpenSearch API to become ready (29 retries left).
+FAILED - RETRYING: [opensearch1]: opensearch : Wait for OpenSearch API to become ready (28 retries left).
+ok: [opensearch1]
+
+TASK [opensearch : Show cluster health] ****************************************
+ok: [opensearch1] => 
+    opensearch_health.json:
+        active_primary_shards: 2
+        active_shards: 2
+        active_shards_percent_as_number: 100.0
+        cluster_name: lab-cluster
+        delayed_unassigned_shards: 0
+        discovered_cluster_manager: true
+        discovered_master: true
+        initializing_shards: 0
+        number_of_data_nodes: 1
+        number_of_in_flight_fetch: 0
+        number_of_nodes: 1
+        number_of_pending_tasks: 0
+        relocating_shards: 0
+        status: green
+        task_max_waiting_in_queue_millis: 0
+        timed_out: false
+        unassigned_shards: 0
+
+TASK [opensearch : Create Dashboards user] *************************************
+changed: [opensearch1]
+
+TASK [opensearch : Download OpenSearch Dashboards 3.8.0] ***********************
+changed: [opensearch1]
+
+TASK [opensearch : Unpack OpenSearch Dashboards] *******************************
+changed: [opensearch1]
+
+TASK [opensearch : Create symlink to installed Dashboards version] *************
+changed: [opensearch1]
+
+TASK [opensearch : Render opensearch_dashboards.yml] ***************************
+changed: [opensearch1]
+
+TASK [opensearch : Install systemd unit for Dashboards] ************************
+changed: [opensearch1]
+
+TASK [opensearch : Apply pending Dashboards changes] ***************************
+
+RUNNING HANDLER [opensearch : Reload systemd] **********************************
+ok: [opensearch1]
+
+RUNNING HANDLER [opensearch : Restart opensearch-dashboards] *******************
+changed: [opensearch1]
+
+TASK [opensearch : Enable and start Dashboards] ********************************
+changed: [opensearch1]
+
+TASK [opensearch : Wait for Dashboards to become ready] ************************
+FAILED - RETRYING: [opensearch1]: opensearch : Wait for Dashboards to become ready (29 retries left).
+ok: [opensearch1]
+
+PLAY RECAP *********************************************************************
+opensearch1                : ok=30   changed=23   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
