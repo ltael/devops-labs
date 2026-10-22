@@ -35,7 +35,7 @@
   notify: Restart opensearch
 - name: Generate demo TLS certificates and security config
   ansible.builtin.command:
-    cmd: "{{ opensearch_versioned_home }}/plugins/opensearch-security/tools/install_demo_configuration.sh -y -i -s"
+    cmd: "/bin/bash {{ opensearch_versioned_home }}/plugins/opensearch-security/tools/install_demo_configuration.sh -y -i -s"
     creates: "{{ opensearch_versioned_home }}/config/esnode.pem"
   environment:
     OPENSEARCH_INITIAL_ADMIN_PASSWORD: "{{ opensearch_admin_password }}"
