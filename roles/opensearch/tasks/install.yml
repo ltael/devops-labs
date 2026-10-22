@@ -1,0 +1,45 @@
+- name: Create data and log directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+    mode: "0750"
+  loop:
+    - "{{ opensearch_data_dir }}"
+    - "{{ opensearch_log_dir }}"
+
+- name: Download OpenSearch {{ opensearch_version }}
+  ansible.builtin.get_url:
+    url: "{{ opensearch_download_url }}"
+    checksum: "sha512:{{ opensearch_download_url }}.sha512"
+    dest: "/tmp/opensearch-{{ opensearch_version }}.tar.gz"
+    mode: "0644"
+    timeout: 600
+- name: Unpack OpenSearch
+  ansible.builtin.unarchive:
+    src: "/tmp/opensearch-{{ opensearch_version }}.tar.gz"
+    dest: "{{ opensearch_install_root }}"
+    remote_src: true
+    owner: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+    creates: "{{ opensearch_versioned_home }}/bin/opensearch"
+
+- name: Create symlink to installed OpenSearch version
+  ansible.builtin.file:
+    src: "{{ opensearch_versioned_home }}"
+    dest: "{{ opensearch_home }}"
+    state: link
+    owner: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+  notify: Restart opensearch
+- name: Generate demo TLS certificates and security config
+  ansible.builtin.command:
+    cmd: "{{ opensearch_versioned_home }}/plugins/opensearch-security/tools/install_demo_configuration.sh -y -i -s"
+    creates: "{{ opensearch_versioned_home }}/config/esnode.pem"
+  environment:
+    OPENSEARCH_INITIAL_ADMIN_PASSWORD: "{{ opensearch_admin_password }}"
+    OPENSEARCH_JAVA_HOME: "{{ opensearch_versioned_home }}/jdk"
+  become: true
+  become_user: "{{ opensearch_user }}"
+  no_log: true

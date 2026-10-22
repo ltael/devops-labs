@@ -1,0 +1,17 @@
+- name: Render opensearch.yml
+  ansible.builtin.template:
+    src: opensearch.yml.j2
+    dest: "{{ opensearch_versioned_home }}/config/opensearch.yml"
+    owner: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+    mode: "0640"
+  notify: Restart opensearch
+
+- name: Render JVM heap options
+  ansible.builtin.template:
+    src: jvm-heap.options.j2
+    dest: "{{ opensearch_versioned_home }}/config/jvm.options.d/heap.options"
+    owner: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+    mode: "0640"
+  notify: Restart opensearch

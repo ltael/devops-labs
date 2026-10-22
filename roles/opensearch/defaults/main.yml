@@ -1,0 +1,36 @@
+# Версии
+opensearch_version: "3.8.0"
+opensearch_dashboards_version: "3.8.0"
+
+# Куда ставить и где хранить данные
+opensearch_install_root: /opt
+opensearch_data_dir: /var/lib/opensearch
+opensearch_log_dir: /var/log/opensearch
+
+# Системные пользователи служб
+opensearch_user: opensearch
+opensearch_group: opensearch
+opensearch_dashboards_user: opensearch-dashboards
+
+# Параметры узла
+opensearch_cluster_name: lab-cluster
+opensearch_node_name: "{{ inventory_hostname }}"
+opensearch_network_host: "0.0.0.0"
+opensearch_http_port: 9200
+opensearch_heap_size: 1g
+opensearch_memory_lock: true
+opensearch_extra_config: {}
+
+# Пароль admin: задаётся через Vault, пустой по умолчанию (роль остановится на проверке)
+opensearch_admin_password: ""
+
+# Dashboards
+opensearch_dashboards_host: "0.0.0.0"
+opensearch_dashboards_port: 5601
+opensearch_dashboards_server_user: kibanaserver
+opensearch_dashboards_server_password: kibanaserver
+
+# Проверка готовности
+opensearch_healthcheck_retries: 30
+opensearch_healthcheck_delay: 10
+opensearch_healthcheck_accepted_statuses: [green, yellow]

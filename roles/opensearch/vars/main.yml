@@ -1,0 +1,13 @@
+opensearch_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'x64' }}"
+opensearch_packages: [acl, curl, tar, gzip]
+opensearch_artifacts_url: https://artifacts.opensearch.org/releases/bundle
+
+opensearch_versioned_home: "{{ opensearch_install_root }}/opensearch-{{ opensearch_version }}"
+opensearch_home: "{{ opensearch_install_root }}/opensearch"
+opensearch_archive: "opensearch-{{ opensearch_version }}-linux-{{ opensearch_arch }}.tar.gz"
+opensearch_download_url: "{{ opensearch_artifacts_url }}/opensearch/{{ opensearch_version }}/{{ opensearch_archive }}"
+
+opensearch_dashboards_versioned_home: "{{ opensearch_install_root }}/opensearch-dashboards-{{ opensearch_dashboards_version }}"
+opensearch_dashboards_home: "{{ opensearch_install_root }}/opensearch-dashboards"
+opensearch_dashboards_archive: "opensearch-dashboards-{{ opensearch_dashboards_version }}-linux-{{ opensearch_arch }}.tar.gz"
+opensearch_dashboards_download_url: "{{ opensearch_artifacts_url }}/opensearch-dashboards/{{ opensearch_dashboards_version }}/{{ opensearch_dashboards_archive }}"

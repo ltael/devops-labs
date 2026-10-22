@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: opensearch
+  author: Арбузина Елена
+  description: Install and configure OpenSearch and OpenSearch Dashboards (single-node, tarball)
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions: [jammy, noble]
+dependencies: []
