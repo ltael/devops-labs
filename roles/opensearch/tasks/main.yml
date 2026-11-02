@@ -10,5 +10,7 @@
   ansible.builtin.import_tasks: service.yml
 - name: Check OpenSearch readiness
   ansible.builtin.import_tasks: healthcheck.yml
+- name: Configure security model
+  ansible.builtin.import_tasks: security.yml
 - name: Install and configure Dashboards
   ansible.builtin.import_tasks: dashboards.yml

@@ -1,0 +1,85 @@
+- name: Configure OpenSearch security via REST API
+  module_defaults:
+    ansible.builtin.uri:
+      url_username: admin
+      url_password: "{{ opensearch_admin_password }}"
+      force_basic_auth: true
+      validate_certs: false
+  block:
+    - name: Get current logs index template
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_index_template/{{ opensearch_logs_data_stream }}"
+        status_code: [200, 404]
+      register: opensearch_logs_template_current
+
+    - name: Create or update logs index template
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_index_template/{{ opensearch_logs_data_stream }}"
+        method: PUT
+        body_format: json
+        body: "{{ lookup('ansible.builtin.template', 'logs-index-template.json.j2') | from_json }}"
+        status_code: 200
+      when: >-
+        opensearch_logs_template_current.status == 404 or
+        (opensearch_logs_template_current.json.index_templates[0].index_template.version | default(0) | int)
+        != (opensearch_logs_template_version | int)
+      changed_when: true
+
+    - name: Check logs data stream
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_data_stream/{{ opensearch_logs_data_stream }}"
+        status_code: [200, 404]
+      register: opensearch_logs_stream_current
+
+    - name: Create logs data stream
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_data_stream/{{ opensearch_logs_data_stream }}"
+        method: PUT
+        status_code: 200
+      when: opensearch_logs_stream_current.status == 404
+      changed_when: true
+
+    - name: Create or update security roles
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_plugins/_security/api/roles/{{ item.key }}"
+        method: PUT
+        body_format: json
+        body: "{{ item.value }}"
+        status_code: [200, 201]
+      loop: "{{ opensearch_security_roles | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      register: opensearch_roles_result
+      changed_when: opensearch_roles_result.status == 201
+
+    - name: Create or update internal users
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_plugins/_security/api/internalusers/{{ item.username }}"
+        method: PUT
+        body_format: json
+        body:
+          password: "{{ item.password }}"
+          attributes:
+            purpose: "{{ item.description }}"
+        status_code: [200, 201]
+      loop: "{{ opensearch_security_users }}"
+      loop_control:
+        label: "{{ item.username }}"
+      register: opensearch_users_result
+      changed_when: opensearch_users_result.status == 201
+      no_log: true
+
+    - name: Map users to roles
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_plugins/_security/api/rolesmapping/{{ item.role }}"
+        method: PUT
+        body_format: json
+        body:
+          users:
+            - "{{ item.username }}"
+        status_code: [200, 201]
+      loop: "{{ opensearch_security_users }}"
+      loop_control:
+        label: "{{ item.username }} -> {{ item.role }}"
+      register: opensearch_mappings_result
+      changed_when: opensearch_mappings_result.status == 201
