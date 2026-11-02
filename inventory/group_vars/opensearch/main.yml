@@ -1,1 +1,4 @@
 opensearch_admin_password: "{{ vault_opensearch_admin_password }}"
+opensearch_logs_writer_password: "{{ vault_opensearch_logs_writer_password }}"
+opensearch_logs_reader_password: "{{ vault_opensearch_logs_reader_password }}"
+opensearch_cluster_admin_password: "{{ vault_opensearch_cluster_admin_password }}"
