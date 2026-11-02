@@ -1,0 +1,7 @@
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Apply opensearch role
+      ansible.builtin.include_role:
+        name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"

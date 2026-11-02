@@ -1,0 +1,23 @@
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+
+platforms:
+  - name: opensearch-molecule
+    box: bento/ubuntu-24.04
+    memory: 4096
+    cpus: 2
+    groups:
+      - opensearch
+
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_VAULT_PASSWORD_FILE: "${HOME}/.vault_pass_devops"
+  inventory:
+    links:
+      group_vars: ../../../../inventory/group_vars/
+
+verifier:
+  name: ansible
