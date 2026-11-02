@@ -11,3 +11,31 @@ opensearch_dashboards_versioned_home: "{{ opensearch_install_root }}/opensearch-
 opensearch_dashboards_home: "{{ opensearch_install_root }}/opensearch-dashboards"
 opensearch_dashboards_archive: "opensearch-dashboards-{{ opensearch_dashboards_version }}-linux-{{ opensearch_arch }}.tar.gz"
 opensearch_dashboards_download_url: "{{ opensearch_artifacts_url }}/opensearch-dashboards/{{ opensearch_dashboards_version }}/{{ opensearch_dashboards_archive }}"
+
+opensearch_api_url: "https://127.0.0.1:{{ opensearch_http_port }}"
+
+# Права ролей фиксированы заданием, поэтому они во vars, а не в defaults
+opensearch_security_roles:
+  lab_logs_writer:
+    cluster_permissions:
+      - "indices:data/write/bulk"
+    index_permissions:
+      - index_patterns:
+          - "{{ opensearch_logs_data_stream }}"
+          - ".ds-{{ opensearch_logs_data_stream }}-*"
+        allowed_actions:
+          - "indices:data/write/index"
+          - "indices:data/write/bulk*"
+  lab_logs_reader:
+    cluster_permissions: []
+    index_permissions:
+      - index_patterns:
+          - "{{ opensearch_logs_data_stream }}*"
+          - ".ds-{{ opensearch_logs_data_stream }}-*"
+        allowed_actions:
+          - "read"
+  lab_cluster_admin:
+    cluster_permissions:
+      - "cluster_monitor"
+      - "cluster:admin/settings/update"
+    index_permissions: []

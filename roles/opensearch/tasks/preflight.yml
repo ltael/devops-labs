@@ -5,3 +5,11 @@
       - opensearch_heap_size is match('^[0-9]+[mg]$')
     fail_msg: "Задайте opensearch_admin_password (через Vault) и корректный opensearch_heap_size (например 1g)"
     quiet: true
+
+- name: Validate security user passwords
+  ansible.builtin.assert:
+    that:
+      - (opensearch_security_users | selectattr('username', 'equalto', item) | first).password | length >= 8
+    fail_msg: "Задайте пароль пользователя {{ item }} через Vault (не короче 8 символов)"
+    quiet: true
+  loop: "{{ opensearch_security_users | map(attribute='username') | list }}"

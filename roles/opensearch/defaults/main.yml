@@ -34,3 +34,31 @@ opensearch_dashboards_server_password: kibanaserver
 opensearch_healthcheck_retries: 30
 opensearch_healthcheck_delay: 10
 opensearch_healthcheck_accepted_statuses: [green, yellow]
+
+# --- Лабораторная 2: ролевая модель ---
+# Имя data stream для логов
+opensearch_logs_data_stream: logs
+# Версия шаблона индекса: увеличьте, чтобы роль обновила шаблон
+opensearch_logs_template_version: 1
+opensearch_logs_shards: 1
+opensearch_logs_replicas: 0
+
+# Пароли пользователей: задаются через Vault, пустые по умолчанию
+opensearch_logs_writer_password: ""
+opensearch_logs_reader_password: ""
+opensearch_cluster_admin_password: ""
+
+# Пользователи и их роли
+opensearch_security_users:
+  - username: logs_writer
+    password: "{{ opensearch_logs_writer_password }}"
+    role: lab_logs_writer
+    description: Write-only access to the logs data stream
+  - username: logs_reader
+    password: "{{ opensearch_logs_reader_password }}"
+    role: lab_logs_reader
+    description: Read-only access to logs* indices
+  - username: cluster_admin
+    password: "{{ opensearch_cluster_admin_password }}"
+    role: lab_cluster_admin
+    description: Cluster monitoring and settings without data access
