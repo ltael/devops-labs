@@ -1,0 +1,620 @@
+WARNING  [default > config] The scenario config file ('/home/ltael/devops-labs/roles/opensearch/molecule/default/molecule.yml') has been modified since the scenario was created. If recent changes are important, reset the scenario with 'molecule destroy' to clean up created items or 'molecule reset' to clear current configuration.
+WARNING  Driver vagrant does not provide a schema.
+WARNING  [default > config] The scenario config file ('/home/ltael/devops-labs/roles/opensearch/molecule/default/molecule.yml') has been modified since the scenario was created. If recent changes are important, reset the scenario with 'molecule destroy' to clean up created items or 'molecule reset' to clear current configuration.
+WARNING  Driver vagrant does not provide a schema.
+INFO     [default > discovery] scenario test matrix: dependency, cleanup, destroy, syntax, create, prepare, converge, idempotence, side_effect, verify, cleanup, destroy
+INFO     [default > prerun] Performing prerun with role_name_check=0...
+INFO     [default > dependency] Executing
+WARNING  [default > dependency] Missing roles requirements file: requirements.yml
+WARNING  [default > dependency] Missing collections requirements file: collections.yml
+WARNING  [default > dependency] Executed: 2 missing (Remove from test_sequence to suppress)
+INFO     [default > cleanup] Executing
+WARNING  [default > cleanup] Executed: Missing playbook (Remove from test_sequence to suppress)
+INFO     [default > destroy] Executing
+
+PLAY [Destroy] *****************************************************************
+
+TASK [Destroy molecule instance(s)] ********************************************
+changed: [localhost]
+
+TASK [Populate instance config] ************************************************
+ok: [localhost]
+
+TASK [Dump instance config] ****************************************************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > destroy] Executed: Successful
+INFO     [default > syntax] Executing
+
+playbook: /home/ltael/devops-labs/roles/opensearch/molecule/default/converge.yml
+INFO     [default > syntax] Executed: Successful
+INFO     [default > create] Executing
+
+PLAY [Create] ******************************************************************
+
+TASK [Create molecule instance(s)] *********************************************
+changed: [localhost]
+
+TASK [Populate instance config dict] *******************************************
+ok: [localhost] => (item={'Host': 'opensearch-molecule', 'HostName': '127.0.0.1', 'User': 'vagrant', 'Port': '2200', 'UserKnownHostsFile': '/dev/null', 'StrictHostKeyChecking': 'no', 'PasswordAuthentication': 'no', 'IdentityFile': '/home/ltael/.ansible/tmp/molecule.tygS.default/.vagrant/machines/opensearch-molecule/virtualbox/private_key', 'IdentitiesOnly': 'yes', 'LogLevel': 'FATAL', 'PubkeyAcceptedKeyTypes': '+ssh-rsa', 'HostKeyAlgorithms': '+ssh-rsa'})
+
+TASK [Convert instance config dict to a list] **********************************
+ok: [localhost]
+
+TASK [Dump instance config] ****************************************************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > create] Executed: Successful
+INFO     [default > prepare] Executing
+
+PLAY [Prepare] *****************************************************************
+
+TASK [Gather system info] ******************************************************
+ok: [opensearch-molecule]
+
+TASK [Bootstrap python for Ansible] ********************************************
+ok: [opensearch-molecule]
+
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > prepare] Executed: Successful
+INFO     [default > converge] Executing
+
+PLAY [Converge] ****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [opensearch-molecule]
+
+TASK [Apply opensearch role] ***************************************************
+included: /home/ltael/devops-labs/roles/opensearch for opensearch-molecule
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Validate role parameters] *****
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Validate security user passwords] ***
+ok: [opensearch-molecule] => (item=logs_writer)
+ok: [opensearch-molecule] => (item=logs_reader)
+ok: [opensearch-molecule] => (item=cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install dependencies] *********
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create OpenSearch group] ******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create OpenSearch user] *******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Set kernel parameters for OpenSearch] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply kernel parameters before service start] ***
+
+RUNNING HANDLER [/home/ltael/devops-labs/roles/opensearch : Apply sysctl] ******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create data and log directories] ***
+changed: [opensearch-molecule] => (item=/var/lib/opensearch)
+changed: [opensearch-molecule] => (item=/var/log/opensearch)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Download OpenSearch 3.8.0] ****
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Unpack OpenSearch] ************
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create symlink to installed OpenSearch version] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Generate demo TLS certificates and security config] ***
+[WARNING]: Module remote_tmp /opt/opensearch/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render opensearch.yml] ********
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render JVM heap options] ******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install systemd unit for OpenSearch] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply pending OpenSearch changes] ***
+
+RUNNING HANDLER [/home/ltael/devops-labs/roles/opensearch : Reload systemd] ****
+ok: [opensearch-molecule]
+
+RUNNING HANDLER [/home/ltael/devops-labs/roles/opensearch : Restart opensearch] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Enable and start OpenSearch] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Wait for OpenSearch API to become ready] ***
+FAILED - RETRYING: [opensearch-molecule]: /home/ltael/devops-labs/roles/opensearch : Wait for OpenSearch API to become ready (29 retries left).
+FAILED - RETRYING: [opensearch-molecule]: /home/ltael/devops-labs/roles/opensearch : Wait for OpenSearch API to become ready (28 retries left).
+FAILED - RETRYING: [opensearch-molecule]: /home/ltael/devops-labs/roles/opensearch : Wait for OpenSearch API to become ready (27 retries left).
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Show cluster health] **********
+ok: [opensearch-molecule] => {
+    "opensearch_health.json": {
+        "active_primary_shards": 2,
+        "active_shards": 2,
+        "active_shards_percent_as_number": 100.0,
+        "cluster_name": "lab-cluster",
+        "delayed_unassigned_shards": 0,
+        "discovered_cluster_manager": true,
+        "discovered_master": true,
+        "initializing_shards": 0,
+        "number_of_data_nodes": 1,
+        "number_of_in_flight_fetch": 0,
+        "number_of_nodes": 1,
+        "number_of_pending_tasks": 0,
+        "relocating_shards": 0,
+        "status": "green",
+        "task_max_waiting_in_queue_millis": 0,
+        "timed_out": false,
+        "unassigned_shards": 0
+    }
+}
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Get current logs index template] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update logs index template] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Check logs data stream] *******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create logs data stream] ******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update security roles] ***
+changed: [opensearch-molecule] => (item=lab_logs_writer)
+changed: [opensearch-molecule] => (item=lab_logs_reader)
+changed: [opensearch-molecule] => (item=lab_cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update internal users] ***
+changed: [opensearch-molecule] => (item=(censored due to no_log))
+changed: [opensearch-molecule] => (item=(censored due to no_log))
+changed: [opensearch-molecule] => (item=(censored due to no_log))
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Map users to roles] ***********
+changed: [opensearch-molecule] => (item=logs_writer -> lab_logs_writer)
+changed: [opensearch-molecule] => (item=logs_reader -> lab_logs_reader)
+changed: [opensearch-molecule] => (item=cluster_admin -> lab_cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create Dashboards user] *******
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Download OpenSearch Dashboards 3.8.0] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Unpack OpenSearch Dashboards] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create symlink to installed Dashboards version] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render opensearch_dashboards.yml] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install systemd unit for Dashboards] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply pending Dashboards changes] ***
+
+RUNNING HANDLER [/home/ltael/devops-labs/roles/opensearch : Reload systemd] ****
+ok: [opensearch-molecule]
+
+RUNNING HANDLER [/home/ltael/devops-labs/roles/opensearch : Restart opensearch-dashboards] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Enable and start Dashboards] ***
+changed: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Wait for Dashboards to become ready] ***
+FAILED - RETRYING: [opensearch-molecule]: /home/ltael/devops-labs/roles/opensearch : Wait for Dashboards to become ready (29 retries left).
+ok: [opensearch-molecule]
+
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=39   changed=28   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > converge] Executed: Successful
+INFO     [default > idempotence] Executing
+
+PLAY [Converge] ****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [opensearch-molecule]
+
+TASK [Apply opensearch role] ***************************************************
+included: /home/ltael/devops-labs/roles/opensearch for opensearch-molecule
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Validate role parameters] *****
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Validate security user passwords] ***
+ok: [opensearch-molecule] => (item=logs_writer)
+ok: [opensearch-molecule] => (item=logs_reader)
+ok: [opensearch-molecule] => (item=cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install dependencies] *********
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create OpenSearch group] ******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create OpenSearch user] *******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Set kernel parameters for OpenSearch] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply kernel parameters before service start] ***
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create data and log directories] ***
+ok: [opensearch-molecule] => (item=/var/lib/opensearch)
+ok: [opensearch-molecule] => (item=/var/log/opensearch)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Download OpenSearch 3.8.0] ****
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Unpack OpenSearch] ************
+skipping: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create symlink to installed OpenSearch version] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Generate demo TLS certificates and security config] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render opensearch.yml] ********
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render JVM heap options] ******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install systemd unit for OpenSearch] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply pending OpenSearch changes] ***
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Enable and start OpenSearch] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Wait for OpenSearch API to become ready] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Show cluster health] **********
+ok: [opensearch-molecule] => {
+    "opensearch_health.json": {
+        "active_primary_shards": 5,
+        "active_shards": 5,
+        "active_shards_percent_as_number": 100.0,
+        "cluster_name": "lab-cluster",
+        "delayed_unassigned_shards": 0,
+        "discovered_cluster_manager": true,
+        "discovered_master": true,
+        "initializing_shards": 0,
+        "number_of_data_nodes": 1,
+        "number_of_in_flight_fetch": 0,
+        "number_of_nodes": 1,
+        "number_of_pending_tasks": 0,
+        "relocating_shards": 0,
+        "status": "green",
+        "task_max_waiting_in_queue_millis": 0,
+        "timed_out": false,
+        "unassigned_shards": 0
+    }
+}
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Get current logs index template] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update logs index template] ***
+skipping: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Check logs data stream] *******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create logs data stream] ******
+skipping: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update security roles] ***
+ok: [opensearch-molecule] => (item=lab_logs_writer)
+ok: [opensearch-molecule] => (item=lab_logs_reader)
+ok: [opensearch-molecule] => (item=lab_cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create or update internal users] ***
+ok: [opensearch-molecule] => (item=(censored due to no_log))
+ok: [opensearch-molecule] => (item=(censored due to no_log))
+ok: [opensearch-molecule] => (item=(censored due to no_log))
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Map users to roles] ***********
+ok: [opensearch-molecule] => (item=logs_writer -> lab_logs_writer)
+ok: [opensearch-molecule] => (item=logs_reader -> lab_logs_reader)
+ok: [opensearch-molecule] => (item=cluster_admin -> lab_cluster_admin)
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create Dashboards user] *******
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Download OpenSearch Dashboards 3.8.0] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Unpack OpenSearch Dashboards] ***
+skipping: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Create symlink to installed Dashboards version] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Render opensearch_dashboards.yml] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Install systemd unit for Dashboards] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Apply pending Dashboards changes] ***
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Enable and start Dashboards] ***
+ok: [opensearch-molecule]
+
+TASK [/home/ltael/devops-labs/roles/opensearch : Wait for Dashboards to become ready] ***
+ok: [opensearch-molecule]
+
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=30   changed=0    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0
+
+INFO     [default > idempotence] Executed: Successful
+INFO     [default > side_effect] Executing
+WARNING  [default > side_effect] Executed: Missing playbook (Remove from test_sequence to suppress)
+INFO     [default > verify] Executing
+
+PLAY [Verify] ******************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [opensearch-molecule]
+
+TASK [Generate a unique marker for this test run] ******************************
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/ltael/devops-labs/roles/opensearch/molecule/default/verify.yml:19:33
+
+17     - name: Generate a unique marker for this test run
+18       ansible.builtin.set_fact:
+19         opensearch_test_marker: "molecule-{{ ansible_date_time.epoch }}"
+                                   ^ column 33
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+ok: [opensearch-molecule]
+
+TASK [Scenario 0: OpenSearch works correctly, not just runs] *******************
+included: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/00_service.yml for opensearch-molecule
+
+TASK [S0 | Collect service facts] **********************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | OpenSearch and Dashboards services are running and enabled] *********
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S0 | Kernel parameter vm.max_map_count is applied] ***********************
+ok: [opensearch-molecule]
+
+TASK [S0 | Anonymous requests are rejected (security plugin is active)] ********
+ok: [opensearch-molecule]
+
+TASK [S0 | Get OpenSearch version] *********************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Installed version matches the expected one] *************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S0 | Get cluster health] *************************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Cluster is green and has exactly one node] **************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S0 | Index a test document] **********************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Search for the test document] ***************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Test document is found] *********************************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S0 | Delete the test index] **********************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Index template for logs exists] *************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Data stream logs exists] ********************************************
+ok: [opensearch-molecule]
+
+TASK [S0 | Dashboards responds] ************************************************
+ok: [opensearch-molecule]
+
+TASK [Scenario 1: user with the write role] ************************************
+included: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/01_writer.yml for opensearch-molecule
+
+TASK [S1 | Writer writes a document into data stream logs] *********************
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/01_writer.yml:9:21
+
+7     body_format: json
+8     body:
+9       "@timestamp": "{{ ansible_date_time.iso8601 }}"
+                      ^ column 21
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+ok: [opensearch-molecule]
+
+TASK [S1 | Document is created in the data stream] *****************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S1 | Writer cannot search] ***********************************************
+ok: [opensearch-molecule]
+
+TASK [S1 | Writer has no cluster permissions] **********************************
+ok: [opensearch-molecule]
+
+TASK [Scenario 2: user with the read role] *************************************
+included: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/02_reader.yml for opensearch-molecule
+
+TASK [S2 | Reader searches logs* for the document from scenario 1] *************
+ok: [opensearch-molecule]
+
+TASK [S2 | Document from scenario 1 is found] **********************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S2 | Reader cannot write] ************************************************
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/02_reader.yml:28:21
+
+26     body_format: json
+27     body:
+28       "@timestamp": "{{ ansible_date_time.iso8601 }}"
+                       ^ column 21
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+ok: [opensearch-molecule]
+
+TASK [S2 | Reader cannot delete the data stream] *******************************
+ok: [opensearch-molecule]
+
+TASK [S2 | Prepare an index outside logs* (as admin)] **************************
+ok: [opensearch-molecule]
+
+TASK [S2 | Put a document into the index outside logs* (as admin)] *************
+ok: [opensearch-molecule]
+
+TASK [S2 | Reader cannot read an index outside logs*] **************************
+ok: [opensearch-molecule]
+
+TASK [S2 | Reader cannot delete an index] **************************************
+ok: [opensearch-molecule]
+
+TASK [Scenario 3: cluster administrator] ***************************************
+included: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/03_cluster_admin.yml for opensearch-molecule
+
+TASK [S3 | Admin gets cluster settings] ****************************************
+ok: [opensearch-molecule]
+
+TASK [S3 | Cluster settings are returned] **************************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S3 | Admin gets cluster health] ******************************************
+ok: [opensearch-molecule]
+
+TASK [S3 | Cluster health is returned] *****************************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S3 | Admin gets OpenSearch version] **************************************
+ok: [opensearch-molecule]
+
+TASK [S3 | Version matches the expected one] ***********************************
+ok: [opensearch-molecule] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [S3 | Admin can change cluster settings] **********************************
+ok: [opensearch-molecule]
+
+TASK [S3 | Admin cannot read logs*] ********************************************
+ok: [opensearch-molecule]
+
+TASK [S3 | Admin cannot write into logs] ***************************************
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/ltael/devops-labs/roles/opensearch/molecule/default/tests/03_cluster_admin.yml:63:21
+
+61     body_format: json
+62     body:
+63       "@timestamp": "{{ ansible_date_time.iso8601 }}"
+                       ^ column 21
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+ok: [opensearch-molecule]
+
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=42   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > verify] Executed: Successful
+INFO     [default > cleanup] Executing
+WARNING  [default > cleanup] Executed: Missing playbook (Remove from test_sequence to suppress)
+INFO     [default > destroy] Executing
+
+PLAY [Destroy] *****************************************************************
+
+TASK [Destroy molecule instance(s)] ********************************************
+changed: [localhost]
+
+TASK [Populate instance config] ************************************************
+ok: [localhost]
+
+TASK [Dump instance config] ****************************************************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+INFO     [default > destroy] Executed: Successful
+INFO     [default > scenario] Pruning extra files from scenario ephemeral directory
+WARNING  Molecule executed 1 scenario (1 missing files)
+
+DETAILS                                                                        
+default > dependency: Executed: 2 missing (Remove from test_sequence to suppress)
+default > cleanup: Executed: Missing playbook (Remove from test_sequence to suppress)
+default > destroy: Executed: Successful
+default > syntax: Executed: Successful
+default > create: Executed: Successful
+default > prepare: Executed: Successful
+default > converge: Executed: Successful
+default > idempotence: Executed: Successful
+default > side_effect: Executed: Missing playbook (Remove from test_sequence to suppress)
+default > verify: Executed: Successful
+default > cleanup: Executed: Missing playbook (Remove from test_sequence to suppress)
+default > destroy: Executed: Successful
+
+SCENARIO RECAP                                                                 
+default                   : actions=12  successful=8  disabled=0  skipped=0  missing=5  failed=0
+

@@ -1,0 +1,47 @@
+PLAY RECAP *********************************************************************
+PLAY RECAP *********************************************************************
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=39   changed=28   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=30   changed=0    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0
+TASK [S0 | Collect service facts] **********************************************
+TASK [S0 | OpenSearch and Dashboards services are running and enabled] *********
+TASK [S0 | Kernel parameter vm.max_map_count is applied] ***********************
+TASK [S0 | Anonymous requests are rejected (security plugin is active)] ********
+TASK [S0 | Get OpenSearch version] *********************************************
+TASK [S0 | Installed version matches the expected one] *************************
+TASK [S0 | Get cluster health] *************************************************
+TASK [S0 | Cluster is green and has exactly one node] **************************
+TASK [S0 | Index a test document] **********************************************
+TASK [S0 | Search for the test document] ***************************************
+TASK [S0 | Test document is found] *********************************************
+TASK [S0 | Delete the test index] **********************************************
+TASK [S0 | Index template for logs exists] *************************************
+TASK [S0 | Data stream logs exists] ********************************************
+TASK [S0 | Dashboards responds] ************************************************
+TASK [S1 | Writer writes a document into data stream logs] *********************
+TASK [S1 | Document is created in the data stream] *****************************
+TASK [S1 | Writer cannot search] ***********************************************
+TASK [S1 | Writer has no cluster permissions] **********************************
+TASK [S2 | Reader searches logs* for the document from scenario 1] *************
+TASK [S2 | Document from scenario 1 is found] **********************************
+TASK [S2 | Reader cannot write] ************************************************
+TASK [S2 | Reader cannot delete the data stream] *******************************
+TASK [S2 | Prepare an index outside logs* (as admin)] **************************
+TASK [S2 | Put a document into the index outside logs* (as admin)] *************
+TASK [S2 | Reader cannot read an index outside logs*] **************************
+TASK [S2 | Reader cannot delete an index] **************************************
+TASK [S3 | Admin gets cluster settings] ****************************************
+TASK [S3 | Cluster settings are returned] **************************************
+TASK [S3 | Admin gets cluster health] ******************************************
+TASK [S3 | Cluster health is returned] *****************************************
+TASK [S3 | Admin gets OpenSearch version] **************************************
+TASK [S3 | Version matches the expected one] ***********************************
+TASK [S3 | Admin can change cluster settings] **********************************
+TASK [S3 | Admin cannot read logs*] ********************************************
+TASK [S3 | Admin cannot write into logs] ***************************************
+PLAY RECAP *********************************************************************
+opensearch-molecule        : ok=42   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+PLAY RECAP *********************************************************************
