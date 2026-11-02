@@ -1,0 +1,76 @@
+- name: "S2 | Reader searches logs* for the document from scenario 1"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs*/_search"
+    method: POST
+    url_username: "{{ opensearch_test_reader }}"
+    url_password: "{{ opensearch_logs_reader_password }}"
+    body_format: json
+    body:
+      query:
+        match_phrase:
+          message: "{{ opensearch_test_marker }}"
+  register: opensearch_test_reader_search
+
+- name: "S2 | Document from scenario 1 is found"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_reader_search.json.hits.total.value >= 1
+      - opensearch_test_reader_search.json.hits.hits[0]._source.message == opensearch_test_marker
+
+- name: "S2 | Reader cannot write"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs/_doc"
+    method: POST
+    url_username: "{{ opensearch_test_reader }}"
+    url_password: "{{ opensearch_logs_reader_password }}"
+    body_format: json
+    body:
+      "@timestamp": "{{ ansible_date_time.iso8601 }}"
+      message: should not be written
+    status_code: 403
+
+- name: "S2 | Reader cannot delete the data stream"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_data_stream/logs"
+    method: DELETE
+    url_username: "{{ opensearch_test_reader }}"
+    url_password: "{{ opensearch_logs_reader_password }}"
+    status_code: 403
+
+- name: "S2 | Prepare an index outside logs* (as admin)"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/secret-data"
+    method: PUT
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+    body_format: json
+    body:
+      settings:
+        number_of_replicas: 0
+    status_code: [200, 400]
+
+- name: "S2 | Put a document into the index outside logs* (as admin)"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/secret-data/_doc/1?refresh=true"
+    method: PUT
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+    body_format: json
+    body:
+      note: secret
+    status_code: [200, 201]
+
+- name: "S2 | Reader cannot read an index outside logs*"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/secret-data/_search"
+    url_username: "{{ opensearch_test_reader }}"
+    url_password: "{{ opensearch_logs_reader_password }}"
+    status_code: 403
+
+- name: "S2 | Reader cannot delete an index"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/secret-data"
+    method: DELETE
+    url_username: "{{ opensearch_test_reader }}"
+    url_password: "{{ opensearch_logs_reader_password }}"
+    status_code: 403

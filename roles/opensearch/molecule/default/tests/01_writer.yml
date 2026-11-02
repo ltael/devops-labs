@@ -1,0 +1,34 @@
+- name: "S1 | Writer writes a document into data stream logs"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs/_doc?refresh=wait_for"
+    method: POST
+    url_username: "{{ opensearch_test_writer }}"
+    url_password: "{{ opensearch_logs_writer_password }}"
+    body_format: json
+    body:
+      "@timestamp": "{{ ansible_date_time.iso8601 }}"
+      message: "{{ opensearch_test_marker }}"
+      level: info
+      service: molecule
+    status_code: 201
+  register: opensearch_test_writer_write
+
+- name: "S1 | Document is created in the data stream"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_writer_write.json.result == 'created'
+      - opensearch_test_writer_write.json._index.startswith('.ds-logs-')
+
+- name: "S1 | Writer cannot search"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs/_search"
+    url_username: "{{ opensearch_test_writer }}"
+    url_password: "{{ opensearch_logs_writer_password }}"
+    status_code: 403
+
+- name: "S1 | Writer has no cluster permissions"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_cluster/health"
+    url_username: "{{ opensearch_test_writer }}"
+    url_password: "{{ opensearch_logs_writer_password }}"
+    status_code: 403
