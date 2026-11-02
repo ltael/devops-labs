@@ -13,12 +13,12 @@
   ansible.builtin.get_url:
     url: "{{ opensearch_download_url }}"
     checksum: "sha512:{{ opensearch_download_url }}.sha512"
-    dest: "/tmp/opensearch-{{ opensearch_version }}.tar.gz"
+    dest: "{{ opensearch_install_root }}/opensearch-{{ opensearch_version }}.tar.gz"
     mode: "0644"
     timeout: 600
 - name: Unpack OpenSearch
   ansible.builtin.unarchive:
-    src: "/tmp/opensearch-{{ opensearch_version }}.tar.gz"
+    src: "{{ opensearch_install_root }}/opensearch-{{ opensearch_version }}.tar.gz"
     dest: "{{ opensearch_install_root }}"
     remote_src: true
     owner: "{{ opensearch_user }}"

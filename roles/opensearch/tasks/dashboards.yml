@@ -9,13 +9,13 @@
   ansible.builtin.get_url:
     url: "{{ opensearch_dashboards_download_url }}"
     checksum: "sha512:{{ opensearch_dashboards_download_url }}.sha512"
-    dest: "/tmp/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    dest: "{{ opensearch_install_root }}/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
     mode: "0644"
     timeout: 600
 
 - name: Unpack OpenSearch Dashboards
   ansible.builtin.unarchive:
-    src: "/tmp/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    src: "{{ opensearch_install_root }}/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
     dest: "{{ opensearch_install_root }}"
     remote_src: true
     owner: "{{ opensearch_dashboards_user }}"
