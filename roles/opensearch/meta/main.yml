@@ -1,5 +1,6 @@
 galaxy_info:
   role_name: opensearch
+  namespace: ltael
   author: Арбузина Елена
   description: Install and configure OpenSearch and OpenSearch Dashboards (single-node, tarball)
   license: MIT

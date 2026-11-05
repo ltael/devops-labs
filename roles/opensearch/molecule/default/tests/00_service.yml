@@ -1,0 +1,94 @@
+- name: "S0 | Collect service facts"
+  ansible.builtin.service_facts:
+
+- name: "S0 | OpenSearch and Dashboards services are running and enabled"
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['opensearch.service'].state == 'running'
+      - ansible_facts.services['opensearch.service'].status == 'enabled'
+      - ansible_facts.services['opensearch-dashboards.service'].state == 'running'
+      - ansible_facts.services['opensearch-dashboards.service'].status == 'enabled'
+
+- name: "S0 | Kernel parameter vm.max_map_count is applied"
+  ansible.builtin.command: sysctl -n vm.max_map_count
+  register: opensearch_test_max_map_count
+  changed_when: false
+  failed_when: opensearch_test_max_map_count.stdout | int < 262144
+
+- name: "S0 | Anonymous requests are rejected (security plugin is active)"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/"
+    status_code: 401
+
+- name: "S0 | Get OpenSearch version"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+  register: opensearch_test_root
+
+- name: "S0 | Installed version matches the expected one"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_root.json.version.number == opensearch_test_expected_version
+
+- name: "S0 | Get cluster health"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_cluster/health"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+  register: opensearch_test_health
+
+- name: "S0 | Cluster is green and has exactly one node"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_health.json.status == 'green'
+      - opensearch_test_health.json.number_of_nodes == 1
+
+- name: "S0 | Index a test document"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/smoke-test/_doc/1?refresh=true"
+    method: PUT
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+    body_format: json
+    body:
+      check: ok
+    status_code: [200, 201]
+
+- name: "S0 | Search for the test document"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/smoke-test/_search?q=check:ok"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+  register: opensearch_test_smoke_search
+
+- name: "S0 | Test document is found"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_smoke_search.json.hits.total.value == 1
+
+- name: "S0 | Delete the test index"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/smoke-test"
+    method: DELETE
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+
+- name: "S0 | Index template for logs exists"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_index_template/logs"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+
+- name: "S0 | Data stream logs exists"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_data_stream/logs"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"
+
+- name: "S0 | Dashboards responds"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_dashboards }}/api/status"
+    url_username: admin
+    url_password: "{{ opensearch_admin_password }}"

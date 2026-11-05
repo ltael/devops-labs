@@ -1,0 +1,21 @@
+{
+  "index_patterns": ["{{ opensearch_logs_data_stream }}"],
+  "data_stream": {},
+  "priority": 200,
+  "version": {{ opensearch_logs_template_version }},
+  "template": {
+    "settings": {
+      "number_of_shards": {{ opensearch_logs_shards }},
+      "number_of_replicas": {{ opensearch_logs_replicas }}
+    },
+    "mappings": {
+      "dynamic": false,
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "message": { "type": "text" },
+        "level": { "type": "keyword" },
+        "service": { "type": "keyword" }
+      }
+    }
+  }
+}

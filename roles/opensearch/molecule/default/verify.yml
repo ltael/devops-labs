@@ -1,0 +1,31 @@
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    opensearch_test_api: https://127.0.0.1:9200
+    opensearch_test_dashboards: http://127.0.0.1:5601
+    opensearch_test_expected_version: "3.8.0"
+    opensearch_test_writer: logs_writer
+    opensearch_test_reader: logs_reader
+    opensearch_test_cluster_admin: cluster_admin
+  module_defaults:
+    ansible.builtin.uri:
+      force_basic_auth: true
+      validate_certs: false
+  tasks:
+    - name: Generate a unique marker for this test run
+      ansible.builtin.set_fact:
+        opensearch_test_marker: "molecule-{{ ansible_date_time.epoch }}"
+
+    - name: "Scenario 0: OpenSearch works correctly, not just runs"
+      ansible.builtin.include_tasks: tests/00_service.yml
+
+    - name: "Scenario 1: user with the write role"
+      ansible.builtin.include_tasks: tests/01_writer.yml
+
+    - name: "Scenario 2: user with the read role"
+      ansible.builtin.include_tasks: tests/02_reader.yml
+
+    - name: "Scenario 3: cluster administrator"
+      ansible.builtin.include_tasks: tests/03_cluster_admin.yml

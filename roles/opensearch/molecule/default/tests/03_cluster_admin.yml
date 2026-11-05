@@ -1,0 +1,65 @@
+- name: "S3 | Admin gets cluster settings"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_cluster/settings"
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+  register: opensearch_test_admin_settings
+
+- name: "S3 | Cluster settings are returned"
+  ansible.builtin.assert:
+    that:
+      - "'persistent' in opensearch_test_admin_settings.json"
+
+- name: "S3 | Admin gets cluster health"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_cluster/health"
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+  register: opensearch_test_admin_health
+
+- name: "S3 | Cluster health is returned"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_admin_health.json.status in ['green', 'yellow']
+
+- name: "S3 | Admin gets OpenSearch version"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/"
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+  register: opensearch_test_admin_root
+
+- name: "S3 | Version matches the expected one"
+  ansible.builtin.assert:
+    that:
+      - opensearch_test_admin_root.json.version.number == opensearch_test_expected_version
+
+- name: "S3 | Admin can change cluster settings"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/_cluster/settings"
+    method: PUT
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+    body_format: json
+    body:
+      persistent:
+        cluster.routing.allocation.enable: all
+
+- name: "S3 | Admin cannot read logs*"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs*/_search"
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+    status_code: 403
+
+- name: "S3 | Admin cannot write into logs"
+  ansible.builtin.uri:
+    url: "{{ opensearch_test_api }}/logs/_doc"
+    method: POST
+    url_username: "{{ opensearch_test_cluster_admin }}"
+    url_password: "{{ opensearch_cluster_admin_password }}"
+    body_format: json
+    body:
+      "@timestamp": "{{ ansible_date_time.iso8601 }}"
+      message: should not be written
+    status_code: 403
