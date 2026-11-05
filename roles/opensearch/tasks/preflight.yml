@@ -1,0 +1,7 @@
+- name: Validate role parameters
+  ansible.builtin.assert:
+    that:
+      - opensearch_admin_password | length >= 8
+      - opensearch_heap_size is match('^[0-9]+[mg]$')
+    fail_msg: "Задайте opensearch_admin_password (через Vault) и корректный opensearch_heap_size (например 1g)"
+    quiet: true

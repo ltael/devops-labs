@@ -1,0 +1,72 @@
+- name: Create Dashboards user
+  ansible.builtin.user:
+    name: "{{ opensearch_dashboards_user }}"
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: Download OpenSearch Dashboards {{ opensearch_dashboards_version }}
+  ansible.builtin.get_url:
+    url: "{{ opensearch_dashboards_download_url }}"
+    checksum: "sha512:{{ opensearch_dashboards_download_url }}.sha512"
+    dest: "/tmp/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    mode: "0644"
+    timeout: 600
+
+- name: Unpack OpenSearch Dashboards
+  ansible.builtin.unarchive:
+    src: "/tmp/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    dest: "{{ opensearch_install_root }}"
+    remote_src: true
+    owner: "{{ opensearch_dashboards_user }}"
+    group: "{{ opensearch_dashboards_user }}"
+    creates: "{{ opensearch_dashboards_versioned_home }}/bin/opensearch-dashboards"
+
+- name: Create symlink to installed Dashboards version
+  ansible.builtin.file:
+    src: "{{ opensearch_dashboards_versioned_home }}"
+    dest: "{{ opensearch_dashboards_home }}"
+    state: link
+  notify: Restart opensearch-dashboards
+
+- name: Render opensearch_dashboards.yml
+  ansible.builtin.template:
+    src: opensearch_dashboards.yml.j2
+    dest: "{{ opensearch_dashboards_versioned_home }}/config/opensearch_dashboards.yml"
+    owner: "{{ opensearch_dashboards_user }}"
+    group: "{{ opensearch_dashboards_user }}"
+    mode: "0640"
+  notify: Restart opensearch-dashboards
+
+- name: Install systemd unit for Dashboards
+  ansible.builtin.template:
+    src: opensearch-dashboards.service.j2
+    dest: /etc/systemd/system/opensearch-dashboards.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart opensearch-dashboards
+
+- name: Apply pending Dashboards changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start Dashboards
+  ansible.builtin.systemd_service:
+    name: opensearch-dashboards
+    enabled: true
+    state: started
+
+- name: Wait for Dashboards to become ready
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ opensearch_dashboards_port }}/api/status"
+    user: admin
+    password: "{{ opensearch_admin_password }}"
+    force_basic_auth: true
+    status_code: 200
+  register: opensearch_dashboards_status
+  until: opensearch_dashboards_status.status == 200
+  retries: "{{ opensearch_healthcheck_retries }}"
+  delay: "{{ opensearch_healthcheck_delay }}"
+  no_log: true

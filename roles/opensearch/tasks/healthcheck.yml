@@ -1,0 +1,19 @@
+- name: Wait for OpenSearch API to become ready
+  ansible.builtin.uri:
+    url: "https://127.0.0.1:{{ opensearch_http_port }}/_cluster/health"
+    user: admin
+    password: "{{ opensearch_admin_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    status_code: 200
+  register: opensearch_health
+  until: >-
+    opensearch_health.status == 200 and
+    opensearch_health.json.status in opensearch_healthcheck_accepted_statuses
+  retries: "{{ opensearch_healthcheck_retries }}"
+  delay: "{{ opensearch_healthcheck_delay }}"
+  no_log: true
+
+- name: Show cluster health
+  ansible.builtin.debug:
+    var: opensearch_health.json

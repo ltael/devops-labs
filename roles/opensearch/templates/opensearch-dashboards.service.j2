@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+[Unit]
+Description=OpenSearch Dashboards {{ opensearch_dashboards_version }}
+Wants=network-online.target
+After=network-online.target opensearch.service
+
+[Service]
+Type=simple
+User={{ opensearch_dashboards_user }}
+Group={{ opensearch_dashboards_user }}
+ExecStart={{ opensearch_dashboards_home }}/bin/opensearch-dashboards
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

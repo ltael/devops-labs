@@ -1,0 +1,32 @@
+- name: Install dependencies
+  ansible.builtin.apt:
+    name: "{{ opensearch_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create OpenSearch group
+  ansible.builtin.group:
+    name: "{{ opensearch_group }}"
+    system: true
+
+- name: Create OpenSearch user
+  ansible.builtin.user:
+    name: "{{ opensearch_user }}"
+    group: "{{ opensearch_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: "{{ opensearch_home }}"
+    create_home: false
+
+- name: Set kernel parameters for OpenSearch
+  ansible.builtin.copy:
+    src: 99-opensearch.conf
+    dest: /etc/sysctl.d/99-opensearch.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Apply sysctl
+
+- name: Apply kernel parameters before service start
+  ansible.builtin.meta: flush_handlers

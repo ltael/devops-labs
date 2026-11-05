@@ -1,0 +1,111 @@
+
+PLAY [Deploy OpenSearch single-node] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [opensearch1]
+
+TASK [opensearch : Validate role parameters] ***********************************
+ok: [opensearch1]
+
+TASK [opensearch : Install dependencies] ***************************************
+ok: [opensearch1]
+
+TASK [opensearch : Create OpenSearch group] ************************************
+ok: [opensearch1]
+
+TASK [opensearch : Create OpenSearch user] *************************************
+ok: [opensearch1]
+
+TASK [opensearch : Set kernel parameters for OpenSearch] ***********************
+ok: [opensearch1]
+
+TASK [opensearch : Apply kernel parameters before service start] ***************
+
+TASK [opensearch : Create data and log directories] ****************************
+ok: [opensearch1] => (item=/var/lib/opensearch)
+ok: [opensearch1] => (item=/var/log/opensearch)
+
+TASK [opensearch : Download OpenSearch 3.8.0] **********************************
+ok: [opensearch1]
+
+TASK [opensearch : Unpack OpenSearch] ******************************************
+skipping: [opensearch1]
+
+TASK [opensearch : Create symlink to installed OpenSearch version] *************
+ok: [opensearch1]
+
+TASK [opensearch : Generate demo TLS certificates and security config] *********
+ok: [opensearch1]
+
+TASK [opensearch : Render opensearch.yml] **************************************
+ok: [opensearch1]
+
+TASK [opensearch : Render JVM heap options] ************************************
+changed: [opensearch1]
+
+TASK [opensearch : Install systemd unit for OpenSearch] ************************
+ok: [opensearch1]
+
+TASK [opensearch : Apply pending OpenSearch changes] ***************************
+
+RUNNING HANDLER [opensearch : Restart opensearch] ******************************
+changed: [opensearch1]
+
+TASK [opensearch : Enable and start OpenSearch] ********************************
+ok: [opensearch1]
+
+TASK [opensearch : Wait for OpenSearch API to become ready] ********************
+FAILED - RETRYING: [opensearch1]: opensearch : Wait for OpenSearch API to become ready (29 retries left).
+FAILED - RETRYING: [opensearch1]: opensearch : Wait for OpenSearch API to become ready (28 retries left).
+ok: [opensearch1]
+
+TASK [opensearch : Show cluster health] ****************************************
+ok: [opensearch1] => 
+    opensearch_health.json:
+        active_primary_shards: 5
+        active_shards: 5
+        active_shards_percent_as_number: 100.0
+        cluster_name: lab-cluster
+        delayed_unassigned_shards: 0
+        discovered_cluster_manager: true
+        discovered_master: true
+        initializing_shards: 0
+        number_of_data_nodes: 1
+        number_of_in_flight_fetch: 0
+        number_of_nodes: 1
+        number_of_pending_tasks: 0
+        relocating_shards: 0
+        status: green
+        task_max_waiting_in_queue_millis: 0
+        timed_out: false
+        unassigned_shards: 0
+
+TASK [opensearch : Create Dashboards user] *************************************
+ok: [opensearch1]
+
+TASK [opensearch : Download OpenSearch Dashboards 3.8.0] ***********************
+ok: [opensearch1]
+
+TASK [opensearch : Unpack OpenSearch Dashboards] *******************************
+skipping: [opensearch1]
+
+TASK [opensearch : Create symlink to installed Dashboards version] *************
+ok: [opensearch1]
+
+TASK [opensearch : Render opensearch_dashboards.yml] ***************************
+ok: [opensearch1]
+
+TASK [opensearch : Install systemd unit for Dashboards] ************************
+ok: [opensearch1]
+
+TASK [opensearch : Apply pending Dashboards changes] ***************************
+
+TASK [opensearch : Enable and start Dashboards] ********************************
+ok: [opensearch1]
+
+TASK [opensearch : Wait for Dashboards to become ready] ************************
+ok: [opensearch1]
+
+PLAY RECAP *********************************************************************
+opensearch1                : ok=24   changed=2    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+
