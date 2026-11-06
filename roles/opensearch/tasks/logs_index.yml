@@ -1,0 +1,40 @@
+- name: Prepare logs index via REST API
+  module_defaults:
+    ansible.builtin.uri:
+      url_username: admin
+      url_password: "{{ opensearch_admin_password }}"
+      force_basic_auth: true
+      validate_certs: false
+  block:
+    - name: Get current logs index template
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_index_template/{{ opensearch_logs_data_stream }}"
+        status_code: [200, 404]
+      register: opensearch_logs_template_current
+
+    - name: Create or update logs index template
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_index_template/{{ opensearch_logs_data_stream }}"
+        method: PUT
+        body_format: json
+        body: "{{ lookup('ansible.builtin.template', 'logs-index-template.json.j2') | from_json }}"
+        status_code: 200
+      when: >-
+        opensearch_logs_template_current.status == 404 or
+        (opensearch_logs_template_current.json.index_templates[0].index_template.version | default(0) | int)
+        != (opensearch_logs_template_version | int)
+      changed_when: true
+
+    - name: Check logs data stream
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_data_stream/{{ opensearch_logs_data_stream }}"
+        status_code: [200, 404]
+      register: opensearch_logs_stream_current
+
+    - name: Create logs data stream
+      ansible.builtin.uri:
+        url: "{{ opensearch_api_url }}/_data_stream/{{ opensearch_logs_data_stream }}"
+        method: PUT
+        status_code: 200
+      when: opensearch_logs_stream_current.status == 404
+      changed_when: true

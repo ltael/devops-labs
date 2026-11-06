@@ -1,6 +1,4 @@
-WARNING  [default > config] The scenario config file ('/home/ltael/devops-labs/roles/opensearch/molecule/default/molecule.yml') has been modified since the scenario was created. If recent changes are important, reset the scenario with 'molecule destroy' to clean up created items or 'molecule reset' to clear current configuration.
 WARNING  Driver vagrant does not provide a schema.
-WARNING  [default > config] The scenario config file ('/home/ltael/devops-labs/roles/opensearch/molecule/default/molecule.yml') has been modified since the scenario was created. If recent changes are important, reset the scenario with 'molecule destroy' to clean up created items or 'molecule reset' to clear current configuration.
 WARNING  Driver vagrant does not provide a schema.
 INFO     [default > discovery] scenario test matrix: dependency, cleanup, destroy, syntax, create, prepare, converge, idempotence, side_effect, verify, cleanup, destroy
 INFO     [default > prerun] Performing prerun with role_name_check=0...
@@ -15,16 +13,16 @@ INFO     [default > destroy] Executing
 PLAY [Destroy] *****************************************************************
 
 TASK [Destroy molecule instance(s)] ********************************************
-changed: [localhost]
+ok: [localhost]
 
 TASK [Populate instance config] ************************************************
 ok: [localhost]
 
 TASK [Dump instance config] ****************************************************
-changed: [localhost]
+skipping: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
 
 INFO     [default > destroy] Executed: Successful
 INFO     [default > syntax] Executing

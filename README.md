@@ -334,8 +334,9 @@ enabled
 | `defaults/main.yml` | параметры data stream, пароли (пустые по умолчанию) и список пользователей с ролями |
 | `vars/main.yml` | адрес API и описание прав трёх ролей |
 | `tasks/preflight.yml` | проверка, что всем пользователям задан пароль не короче 8 символов |
-| `tasks/security.yml` | шаблон индекса, data stream, роли, пользователи, role mapping через REST API |
-| `tasks/main.yml` | подключение `security.yml` после проверки готовности и до Dashboards |
+| `tasks/logs_index.yml` | предподготовка индекса: шаблон индекса и data stream `logs` через REST API |
+| `tasks/security.yml` | роли, пользователи и role mapping через Security REST API |
+| `tasks/main.yml` | подключение `logs_index.yml` и `security.yml` после проверки готовности и до Dashboards |
 | `templates/logs-index-template.json.j2` | шаблон индекса для data stream |
 | `meta/main.yml` | `namespace: ltael` — полное имя роли, которого требует Molecule |
 | `tasks/install.yml`, `tasks/dashboards.yml` | архивы хранятся в `/opt` вместо `/tmp`, чтобы не скачиваться заново после перезагрузки ВМ |
@@ -352,6 +353,9 @@ enabled
 | `opensearch_security_users` | три пользователя | имена пользователей и привязка к ролям меняются без правки задач |
 
 ### Как работают задачи безопасности
+
+Настройка разделена на два файла: `logs_index.yml` готовит индекс (шаблон и data stream), `security.yml` настраивает
+доступ (роли, пользователи, role mapping). Индекс готовится первым, чтобы к моменту выдачи прав data stream уже существовал.
 
 Все запросы выполняются модулем `uri` под admin внутри `block` с `module_defaults`; пароль передаётся параметром
 `url_password`, который Ansible скрывает из вывода. Перезапуск OpenSearch не нужен — Security API применяет изменения сразу.
